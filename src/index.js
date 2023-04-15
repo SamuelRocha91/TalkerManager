@@ -1,6 +1,7 @@
 const express = require('express');
 const findAllJson = require('./readFileSync');
 const randomToken = require('./cripto');
+const { validEmail, validPassword } = require('./validate');
 
 randomToken();
 const app = express();
@@ -37,7 +38,7 @@ app.get('/talker/:id', async (req, res) => {
   res.status(HTTP_OK_STATUS).json(talkerId);
 });
 
-app.post('/login', async (req, res) => {
+app.post('/login', validEmail, validPassword, async (req, res) => {
   const token = randomToken();
   res.status(HTTP_OK_STATUS).json({ token });
 });
