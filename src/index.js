@@ -1,7 +1,15 @@
 const express = require('express');
-const findAllJson = require('./readFileSync');
+const { findAllJson, writeInJson } = require('./readAndWriteFileSync');
 const randomToken = require('./cripto');
-const { validEmail, validPassword } = require('./validate');
+const { 
+  valideRate,
+  validEmail,
+  validPassword,
+  validToken,
+  validName,
+  validAge,
+  valideTalk,
+  valideWatched } = require('./validate');
 
 randomToken();
 const app = express();
@@ -41,4 +49,14 @@ app.get('/talker/:id', async (req, res) => {
 app.post('/login', validEmail, validPassword, async (req, res) => {
   const token = randomToken();
   res.status(HTTP_OK_STATUS).json({ token });
+});
+
+app.post('/talker', validToken, validName, validAge, valideTalk,
+valideWatched, valideRate, async (req, res) => {
+  const { name, age, talk } = req.body;
+
+  const addPerson = await writeInJson({
+    name, age, talk,
+  });
+  res.status(201).json(addPerson);
 });
