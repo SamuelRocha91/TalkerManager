@@ -1,5 +1,5 @@
 const express = require('express');
-const readJSON = require('./readFileSync')
+const findAllJson = require('./readFileSync');
 
 const app = express();
 app.use(express.json());
@@ -12,12 +12,12 @@ app.get('/', (_request, response) => {
   response.status(HTTP_OK_STATUS).send();
 });
 
-
 app.listen(PORT, () => {
   console.log('Online');
 });
 
 app.get('/talker', async (req, res) => {
-  const data = await readJSON();
-  res.status(HTTP_OK_STATUS).json(data)
-})
+  const data = await findAllJson();
+  if(!data) return  res.status(HTTP_OK_STATUS).json([]);
+  res.status(HTTP_OK_STATUS).json(data);
+});
