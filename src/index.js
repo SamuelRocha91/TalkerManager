@@ -1,8 +1,9 @@
 const express = require('express');
-const { findAllJson, writeInJson } = require('./readAndWriteFileSync');
+const { findAllJson, writeInJson, findByIdJson } = require('./readAndWriteFileSync');
 const randomToken = require('./cripto');
 const { 
-  valideRate,
+  valideRate1,
+  valideRate2,
   validEmail,
   validPassword,
   validToken,
@@ -52,11 +53,19 @@ app.post('/login', validEmail, validPassword, async (req, res) => {
 });
 
 app.post('/talker', validToken, validName, validAge, valideTalk,
-valideWatched, valideRate, async (req, res) => {
+valideWatched, valideRate1, valideRate2, async (req, res) => {
   const { name, age, talk } = req.body;
 
   const addPerson = await writeInJson({
     name, age, talk,
   });
   res.status(201).json(addPerson);
+});
+
+app.put('/talker/:id', validToken, validName,
+validAge, valideTalk, valideWatched, valideRate1, valideRate2, async (req, res) => {
+  const { id } = req.params;
+  const number = Number(id);
+  const person = await findByIdJson(number, req.body);
+  res.status(person.status).json(person.object);
 });

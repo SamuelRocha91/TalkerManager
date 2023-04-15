@@ -85,14 +85,19 @@ const validAge = (req, res, next) => {
           }
           next();
     };
-
-    const valideRate = (req, res, next) => {
+     const valideRate1 = (req, res, next) => {
         const { talk } = req.body;
         const { rate } = talk;
         if (rate === undefined || rate.length === 0) {
             return res.status(400).json({ message: 'O campo "rate" é obrigatório',
             });
           }
+          next();
+    };
+
+    const valideRate2 = (req, res, next) => {
+        const { talk } = req.body;
+        const { rate } = talk;
         if (!Number.isInteger(rate) || rate < 1 || rate > 5) {
             return res.status(400).json({
               message: 'O campo "rate" deve ser um número inteiro entre 1 e 5',
@@ -129,5 +134,6 @@ module.exports = {
     validAge,
     valideTalk,
     valideWatched,
-    valideRate,
+    valideRate1,
+    valideRate2,
 };
