@@ -1,5 +1,5 @@
 const express = require('express');
-const { findAllJson, writeInJson, findByIdJson } = require('./readAndWriteFileSync');
+const { findAllJson, writeInJson, findByIdJson, deletePerson } = require('./readAndWriteFileSync');
 const randomToken = require('./cripto');
 const { 
   valideRate1,
@@ -68,4 +68,11 @@ validAge, valideTalk, valideWatched, valideRate1, valideRate2, async (req, res) 
   const number = Number(id);
   const person = await findByIdJson(number, req.body);
   res.status(person.status).json(person.object);
+});
+
+app.delete('/talker/:id', validToken, async (req, res) => {
+  const { id } = req.params;
+  const number = Number(id);
+  await deletePerson(number);
+  res.sendStatus(204);
 });
