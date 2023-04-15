@@ -11,6 +11,7 @@ const {
   validAge,
   valideTalk,
   valideWatched } = require('./validate');
+const { nullQuery, justQueryQ, validateQueryRate, justQueryRate } = require('./middlewares');
 
 randomToken();
 const app = express();
@@ -29,16 +30,17 @@ app.listen(PORT, () => {
   console.log('Online');
 });
 
-app.get('/talker/search', validToken, async (req, res) => {
-  const { q } = req.query;
+app.get('/talker/search', validToken, nullQuery,
+justQueryQ, validateQueryRate, justQueryRate, async (req, res) => {
+  const { q, rate } = req.query;
   const data = await findAllJson();
-if (!q) {
-  return res.status(HTTP_OK_STATUS).json(data);
-}
-  const searchTerm = data.filter(({ name }) => name.includes(q));
-  return res.status(HTTP_OK_STATUS).json(searchTerm || []);
-});
 
+  if (q && rate) {
+    const searchTerm = data.filter(({ talk, name }) => talk.rate === Number(rate)
+    && name.includes(q));
+    return res.status(HTTP_OK_STATUS).json(searchTerm);
+  }
+});
 
 app.get('/talker', async (req, res) => {
   const data = await findAllJson();
@@ -87,4 +89,3 @@ app.delete('/talker/:id', validToken, async (req, res) => {
   await deletePerson(number);
   res.sendStatus(204);
 });
-
