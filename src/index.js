@@ -1,6 +1,8 @@
 const express = require('express');
 const findAllJson = require('./readFileSync');
+const randomToken = require('./cripto');
 
+randomToken();
 const app = express();
 app.use(express.json());
 
@@ -33,4 +35,9 @@ app.get('/talker/:id', async (req, res) => {
   });
 }
   res.status(HTTP_OK_STATUS).json(talkerId);
+});
+
+app.post('/login', async (req, res) => {
+  const token = randomToken();
+  res.status(HTTP_OK_STATUS).json({ token });
 });
