@@ -29,6 +29,17 @@ app.listen(PORT, () => {
   console.log('Online');
 });
 
+app.get('/talker/search', validToken, async (req, res) => {
+  const { q } = req.query;
+  const data = await findAllJson();
+if (!q) {
+  return res.status(HTTP_OK_STATUS).json(data);
+}
+  const searchTerm = data.filter(({ name }) => name.includes(q));
+  return res.status(HTTP_OK_STATUS).json(searchTerm || []);
+});
+
+
 app.get('/talker', async (req, res) => {
   const data = await findAllJson();
   if (!data) return res.status(HTTP_OK_STATUS).json([]);
@@ -76,3 +87,4 @@ app.delete('/talker/:id', validToken, async (req, res) => {
   await deletePerson(number);
   res.sendStatus(204);
 });
+
