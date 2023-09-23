@@ -11,7 +11,15 @@ const {
   validAge,
   valideTalk,
   valideWatched } = require('./validate');
-const { nullQuery, justQueryQ, validateQueryRate, justQueryRate } = require('./middlewares');
+const { nullQuery,
+  justQueryQ,
+  justQueryRate,
+  justQueryDate,
+  validateData,
+  qAndDate,
+  qAndRate,
+  rateAndDate,
+} = require('./middlewares');
 
 randomToken();
 const app = express();
@@ -31,13 +39,14 @@ app.listen(PORT, () => {
 });
 
 app.get('/talker/search', validToken, nullQuery,
-justQueryQ, validateQueryRate, justQueryRate, async (req, res) => {
-  const { q, rate } = req.query;
+justQueryQ, validateData, justQueryDate,
+justQueryRate, qAndDate, qAndRate, rateAndDate, async (req, res) => {
+  const { q, rate, date } = req.query;
   const data = await findAllJson();
 
-  if (q && rate) {
+  if (q && rate && date) {
     const searchTerm = data.filter(({ talk, name }) => talk.rate === Number(rate)
-    && name.includes(q));
+    && name.includes(q) && talk.watchedAt === date);
     return res.status(HTTP_OK_STATUS).json(searchTerm);
   }
 });
